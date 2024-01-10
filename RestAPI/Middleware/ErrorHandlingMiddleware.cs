@@ -12,6 +12,11 @@ namespace RestAPI.Middleware
             {
                 await next.Invoke(httpContext);
             }
+            catch (BadRequestException badRequestException)
+            {
+                httpContext.Response.StatusCode = 400;
+                await httpContext.Response.WriteAsync(badRequestException.Message);
+            }
             catch (NotFoundException notFoundException)
             {
                 httpContext.Response.StatusCode = 404;
