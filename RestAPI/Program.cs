@@ -12,6 +12,8 @@ using RestAPI.Models.Validators;
 using FluentValidation.AspNetCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using RestAPI.Authorization;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseNLog();
@@ -39,6 +41,13 @@ builder.Services.AddAuthentication(option =>
     };
 });
 
+builder.Services.AddAuthorization(option =>
+{
+    option.AddPolicy("HasNationality", b => b.RequireClaim("Nationality", "Polish", "Watican"));
+    option.AddPolicy("AtLeast20", b => b.AddRequirements(new MinimumAgeRequirement(20)));
+});
+builder.Services.AddScoped<IAuthorizationHandler, MinimumAgeRequirementHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
 builder.Services.AddControllers();
 builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
 builder.Services.AddDbContext<RestAPI.Entities.RestaurandDbContext>();
@@ -50,6 +59,8 @@ builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
 builder.Services.AddScoped<RequestTimeMiddleware>();
+builder.Services.AddScoped<IUserContextService, UserContextService>();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
@@ -72,7 +83,7 @@ app.UseSwaggerUI(c =>
 app.UseAuthentication();
 app.UseHttpsRedirection();
 
-//app.UseAuthorization();
+app.UseAuthorization();
 
 app.MapControllers();
 

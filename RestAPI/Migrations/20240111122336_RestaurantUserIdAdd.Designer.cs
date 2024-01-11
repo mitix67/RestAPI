@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RestAPI.Entities;
 
@@ -10,9 +11,11 @@ using RestAPI.Entities;
 namespace RestAPI.Migrations
 {
     [DbContext(typeof(RestaurandDbContext))]
-    partial class RestaurandDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240111122336_RestaurantUserIdAdd")]
+    partial class RestaurantUserIdAdd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
