@@ -49,7 +49,7 @@ namespace RestAPI.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = "AtLeast20")]
+        [Authorize(Policy = "AtLeast2Restaurants")]
         public ActionResult<IEnumerable<RestaurantDto>> GetAll()
         {
             var restaurantsDto = _restaurantService.GetAll();
